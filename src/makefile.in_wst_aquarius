@@ -1,0 +1,59 @@
+###################################################################
+# include file for an individual machine by A.Sekimoto   
+########################################################### machine
+#
+#  1) intel/2021.2.0   2) fftw/3.3.9   3) impi/2021.2.0   4) phdf5/1.12.0 
+#  ++ cuda 11.2.2 (does not work)
+# $module load intel/2021.2.0 fftw/3.3.9 impi/2021.2.0 phdf5/1.12.0 cuda/11.2
+#
+SYSTEM = intel + CUDA11.2, please take care for endian #
+########################################################## compiler
+#F77 = /home/pm8002/k08027/lustre/hdf5_intel_default/bin/h5pfc 
+F77 = h5pfc
+F90 = $(F77)
+CC = icc
+#
+########################################################### library
+LAPACKDIR = /usr/lib/
+CUDA_VER=11.2
+# 11.2 changes interface of cuSparse_dgtsv ...
+#(v10) https://docs.nvidia.com/cuda/archive/10.1/cusparse/index.html#gtsv
+#(v11) https://docs.nvidia.com/cuda/cusparse/index.html#example-b
+#
+MKLDIR = /work/opt/local/x86_64/cores/intel/2021.2.0/mkl/2021.2.0/lib/intel64/ 
+
+HDF5LIB = #/lustre/pm8002/k08027/hdf5_intel_default/lib/
+CUDALIB = /work/opt/local/x86_64/cores/cuda/$(CUDA_VER)/lib64/  
+FFTWINC = #/lustre/app/intel/mkl/include/fftw/ # default (intel)
+#FFTWINC = /home/app/fftw/3.3.8_i/include # intel2018
+# /home/app/fftw/3.3.8_i/include
+CUDAINC = /work/opt/local/x86_64/cores/cuda/$(CUDA_VER)/include/
+#
+#BLAS = blas # interface library (GNU fortran)
+#LAPACK = lapack
+EXTCUDA = -I$(CUDAINC) -L$(CUDALIB) -lcudart -lcublas -lcudadevrt -lcusparse -lstdc++ # -lcublas_device 
+EXTLIBS = -L$(MKLDIR) -lmkl_core -lmkl_intel_lp64 -lmkl_lapack95_lp64 -lmkl_sequential
+#EXTLIBS = -L$(MKLDIR) -mkl=sequential # -ilp64 # -qopenmp
+EXTHDF5 = # -L$(HDF5LIB) 
+EXTFFTW = -I$(FFTWINC) -mkl # -lfftw3 
+#################################################### compiler flags
+#
+#F90OPT = -c -SSL2  $(EXTFFTW) $(EXTCUDA) # for fujitsu
+#F90OPT = -c -fbounds-check  $(EXTFFTW) $(EXTCUDA) # for gfortran
+#F90OPT = -c -march='corei7-avx' -fconvert='little-endian' $(EXTFFTW) $(EXTCUDA)
+#LFOPT  = -march='corei7-avx'  -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) 
+F90OPT = -c -O2 -prec-div -xHost -assume byterecl $(EXTFFTW) $(EXTCUDA)
+LFOPT  = -O2 -prec-div -xHost -assume byterecl $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA)  
+#F90OPT = -c -ipo -O3 -no-prec-div -fp-model fast=2 -xHost  $(EXTFFTW) $(EXTCUDA)
+#LFOPT  = -ipo -O3 -no-prec-div -fp-model fast=2 -xHost $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA)  
+#F90OPT = -c -check bounds -assume byterecl $(EXTFFTW) $(EXTCUDA)
+#LFOPT  = -check bounds -assume byterecl $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA)  
+#
+CCFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I$(CUDAINC)
+GPUFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I$(CUDAINC)
+#
+F77OPT=$(F90OPT)
+
+F77FLAGS=$(F90OPT) 
+LFLAGS = $(LFOPT)
+##############################################################  END

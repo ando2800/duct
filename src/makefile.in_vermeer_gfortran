@@ -1,0 +1,47 @@
+###################################################################
+# include file for an individual machine by A.Sekimoto   
+########################################################### machine
+SYSTEM = gfortran, please take care for endian #
+########################################################## compiler
+F77 = h5pfc 
+F90 = h5pfc 
+CC = gcc
+#
+#F90_HDF5 = h5pfc 
+CMPI_LIB =
+OMP_FLAGS =
+#
+########################################################### library
+LAPACKDIR = /usr/lib/
+CUDA_VER=8.0
+
+HDF5LIB = /opt/hdf5_gfortran/lib/
+CUDALIB = /opt/cuda/$(CUDA_VER)/lib64/
+FFTWINC = /usr/include/
+CUDAINC = /opt/cuda/$(CUDA_VER)/include/
+#
+#BLAS = blas # interface library (GNU fortran)
+#LAPACK = lapack
+EXTCUDA = -I$(CUDAINC) -L$(CUDALIB) -lcudart -lcublas -lcublas_device -lcudadevrt -lcusparse
+EXTLIBS = -L$(LAPACKDIR) -lblas -llapack
+EXTHDF5 = -L$(HDF5LIB) 
+EXTFFTW = -I$(FFTWINC) -lfftw3 
+#################################################### compiler flags
+# choose one of below options
+#F90OPT = -c -fbounds-check  $(EXTFFTW) $(EXTCUDA) # for gfortran
+#LFOPT  =  -fbounds-check -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA)
+#
+F90OPT = -c -O3 -march='corei7-avx' -fconvert='little-endian' $(EXTFFTW) $(EXTCUDA) 
+LFOPT  = -O3 -march='corei7-avx'  -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA) 
+#
+#F90OPT = -c -O2 -fconvert='little-endian' $(EXTFFTW) $(EXTCUDA)
+#LFOPT  = -O2 -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) $(EXTCUDA)  
+#
+############################################################
+F77OPT=$(F90OPT)
+F77FLAGS=$(F90OPT) 
+LFLAGS = $(LFOPT)
+
+CCFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I$(CUDAINC)
+GPUFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I$(CUDAINC)
+##############################################################  END

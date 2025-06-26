@@ -1,0 +1,51 @@
+###################################################################
+# include file for an individual machine by A.Sekimoto   
+########################################################### machine
+SYSTEM = intel take care for endian #
+########################################################## compiler
+F77 = h5pfc 
+F90 = h5pfc 
+CC  = icc
+#
+#F90_HDF5 = h5pfc 
+CMPI_LIB =
+OMP_FLAGS =
+#
+########################################################### library
+LAPACKDIR = /usr/lib/
+CUDA_VER=8.0
+MKLDIR = /opt/intel/compilers_and_libraries_2018.1.163/linux/mkl/lib/intel64/
+#HDF5LIB = /opt/hdf5_1.10.5_intel/lib/
+#HDF5LIB = /opt/hdf5_1.10.1_intel/lib/
+HDF5LIB = /opt/hdf5-1.12.1_oneAPI/lib/
+#HDF5LIB = /opt/hdf5-1.8.21_intel/lib/
+CUDALIB = /opt/cuda/$(CUDA_VER)/lib64/
+FFTWINC = /usr/include/
+CUDAINC = /opt/cuda/$(CUDA_VER)/include/
+#
+EXTCUDA = -I$(CUDAINC) -L$(CUDALIB) -lcudart -lcublas -lcublas_device -lcudadevrt -lcusparse
+EXTLIBS = -L$(MKLDIR) -lmkl_core -lmkl_intel_lp64 -lmkl_lapack95_lp64 -lmkl_sequential #-mkl
+EXTHDF5 = -L$(HDF5LIB) -lhdf5 -lhdf5_fortran -lhdf5_hl -lhdf5hl_fortran
+EXTFFTW = -I$(FFTWINC) -lfftw3 -lfftw3_omp 
+#################################################### compiler flags
+#
+#OPTIONS = -check bounds # -qopenmp
+
+#OPTIONS = -O3 -opt-report -warn noalignments
+#OPTIONS = -check bounds -convert big_endian
+OPTIONS = -axCORE-AVX2 
+
+F90OPT = -c $(OPTIONS) -assume byterecl $(EXTLIBS) $(EXTHDF5) 
+LFOPT  = $(OPTIONS) $(EXTLIBS) $(EXTHDF5) $(EXTFFTW) $(EXTCUDA)
+#
+F90DEBUG =  -c -g -C -assume byterecl
+LFDEBUG  = -v -g -static -C $(EXTLIBS) $(EXTHDF5)
+#
+F77OPT=$(F90OPT)
+
+F77FLAGS=$(F90OPT) 
+LFLAGS = $(LFOPT)
+
+CCFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I/opt/cuda/$(CUDA_VER)/include/
+GPUFLAGS = -DARCH_64=1 -DCUBLAS_GFORTRAN -DNCUBLAS_INTEL_FORTRAN  -I/opt/cuda/$(CUDA_VER)/include/
+##############################################################  END

@@ -1,0 +1,86 @@
+#########################################################################
+# parameter file for rectangular duct, spectral dns code                 #
+# (lines starting with '#' or '%' are comments and ignored)              #
+##########################################################################
+# set grids (mgalx-my-mz)
+48 257 257
+#
+#########################_PHYSICAL_PARAMETERS_############################
+# (1) the problem type: 'icase' (integer)
+ 1
+#
+# (2) the aspect ratio 'aspect' (1 float)
+ 1.d0
+#
+# (3) the streamwise wave-number 'alp' (1 float)
+ 1.0d1
+#
+# (4) fluid viscosity: 'fnu' (1 float)
+#4.8195d-5
+5.82d-5
+#5.8851d-5
+#8.8d-5
+#1.3770d-4
+# 2.1858d-4
+# 1.d-3
+#
+##############################_NUMERICAL_PARAMETERS_######################
+# (5) max. no. of iterations: 'nstep' (1 integer)
+ 10
+# 1
+#
+# (6) iteration interval for writing images: 'nimag' (1 integer)
+ 10
+#
+# (6b) iteration interval for writing history data: 'nhist' (1 integer)
+ 10
+#
+# (7) final time: 'tfin' (1 float)
+ 4000.d1
+#
+# (8) time interval for writing images: 'dtimag' (1 float)
+ 1.d2
+#
+# (9) cfl number: 'cfl' (1 float)
+ 3.d-1
+#
+# (10) fixed time-step: 'dtfixed' (1 float)
+2.0d-3
+#
+# (11) restart [1] from file: 'irestart' (1 integer)
+ 1  
+#
+# (12) no. of first image to file: 'iimag' (1 integer)
+ 11
+#############################_FILE_NAMES_###############################
+# (13) restart filename for uvwp-field: 'fuvwprest' (1 character*80)
+#../alf/uvwp_0217.bin
+#./pool/uvwp_0377.bin
+#./pool/uvwp_0591.bin
+#./test_helm/uvwp_0008.h5
+#./test_helm/uvwp_0009.h5
+./test_helm/uvwp_0010.h5
+#./test/uvwp_0007.bin
+#./test/uvwp_0018.bin
+#
+# (14) base-dir for output of fields etc. [trailing "/" !] (character*80)
+#/pool/uhlmann/
+#./pool/
+./test_helm/
+#
+###################TEMPERATURE#########################################
+# (20) coeff of thermal expansion: 'alphat' (1 float)
+ 1.d0
+#
+# (21)  gravity components: 'gravx','gravy','gravz' (3 floats)
+ -1.d0
+ 0.d0
+ 0.d0
+#
+# (22) coeff of thermal conductivity: 'fkappa' (1 float)
+ 1.4286d-4
+#
+# (23) intensity of the heat source: 'qsource' (1 float)
+ -1.7143d-6
+#
+#######################################################################

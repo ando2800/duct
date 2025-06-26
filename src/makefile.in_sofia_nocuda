@@ -1,0 +1,48 @@
+###################################################################
+# include file for an individual machine by A.Sekimoto   
+########################################################### machine
+#SYSTEM = gfortran, please take care for endian #
+SYSTEM = intel, please take care for endian #
+# [1] set environment on sofia by 
+# $module load intel intelmpi hdf5 
+# [2] then compile 
+# $ make MAIN2 
+# note that you can not compile MAIN1 (with GPU acceleration) on sofia
+########################################################## compiler
+F77 = h5pfc 
+F90 = h5pfc 
+CC = gcc
+#
+CMPI_LIB =
+OMP_FLAGS =
+#
+########################################################### library
+#LAPACKDIR = /usr/lib/
+MKLDIR = /work/intel/oneapi/mkl/latest/lib/intel64/
+HDF5LIB = /work/hdf5-1.12.0/lib/
+FFTWINC = /usr/include/
+#
+#BLAS = blas # interface library (GNU fortran)
+#LAPACK = lapack
+EXTLIBS = -L$(MKLDIR) -lmkl_core -lmkl_intel_lp64 -lmkl_lapack95_lp64 -lmkl_sequential
+#EXTLIBS = -L$(LAPACKDIR) -lblas -llapack
+EXTHDF5 = -L$(HDF5LIB) 
+EXTFFTW = -I$(FFTWINC) -lfftw3 
+#################################################### compiler flags
+# choose one of below
+#F90OPT = -c -fbounds-check  $(EXTFFTW) # for gfortran without CUDA
+#LFOPT  =  -fbounds-check -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5)   
+F90OPT = -c -O3 $(EXTFFTW) 
+LFOPT  = -O3  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5)   
+
+#F90OPT = -c -O2 -fconvert='little-endian' $(EXTFFTW) # for gfortran 
+#LFOPT  = -O2 -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5)  
+
+#F90OPT = -c -march='corei7-avx' -fconvert='little-endian' $(EXTFFTW)
+#LFOPT  = -march='corei7-avx'  -fconvert='little-endian'  $(EXTLIBS) $(EXTFFTW) $(EXTHDF5) 
+#
+########################################################
+F77OPT=$(F90OPT)
+F77FLAGS=$(F90OPT) 
+LFLAGS = $(LFOPT)
+##############################################################  END
